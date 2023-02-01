@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>create</title>
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <script src="/jquery-3.6.1.min(1).js"></script>
+    <script>
+        function copyRadioInput() {
+            let input = "选项<input type=text class=value><br>\n";
+            $(".a").append(input);
+            $(".b").append(input);
+        }
+    </script>
+
+    <script>
+        $(function () {
+            let i = 0;
+            //添加单选
+            $("#addRadio").click(function () {
+                i++;
+                let tr = $("<div class='a'></div>");
+                let id = "问题名称<input type=text class=text id=title>" + "选项<input type=text class=value><br>\n" +
+                    "选项<input type=text class=value><br>\n" + "<button onclick='copyRadioInput()'>增加选项框</button>";
+                tr.html(id);
+                $("#test").append(tr);
+
+                $(document).keydown(function (e) {
+                    if (e.key === "Enter") {
+                        let type = "<input hidden id=hidden"+i+" value=1>";
+                        let title = "<div class=div>";
+                        let title1 = i + "、问题名称<input type=text id=title"+i+" value=" + $(".text").val() + ">";
+                        let a = $(".value");
+                        let radio = '';
+                        for (let j = 0; j < a.length; j++) {
+                            let a1 = a.eq(j).val();
+                            let a2 = "<input type=1 class=" + i + " value=" + a1 + "><br>";
+                            radio = radio + a2;
+                        }
+                        let title2 = "</div>";
+
+                        $(".a").replaceWith(title + type + title1 + radio + title2);
+                    }
+                });
+            });
+
+            //添加多选
+            $("#addCheckboxes").click(function () {
+                i++;
+                let tr = $("<div class='b'></div>");
+                let id = "问题名称<input type=text class=text id=title>" + "选项<input type=text class=value><br>\n" +
+                    "选项<input type=text class=value><br>\n  选项<input type=text class=value><br>\n" +
+                    "<button onclick='copyRadioInput()'>增加选项框</button>";
+                tr.html(id);
+                $("#test").append(tr);
+
+                $(document).keydown(function (e) {
+                    if (e.key === "Enter") {
+                        let type = "<input hidden id=hidden"+i+" value=2>";
+                        let title = "<div class=div>";
+                        let title1 = i + "、问题名称<input type=text id=title"+i+" value=" + $(".text").val() + ">";
+                        let a = $(".value");
+                        let radio = '';
+                        for (let j = 0; j < a.length; j++) {
+                            let a1 = a.eq(j).val();
+                            let a2 = "<input type=2 class=" + i + " value=" + a1 + "><br>";
+                            radio = radio + a2;
+                        }
+                        let title2 = "</div>";
+
+                        $(".b").replaceWith(title + type + title1 + radio + title2);
+                    }
+                });
+            })
+
+            //添加简答题
+            $("#addText").click(function () {
+                i++;
+                let tr = $("<div class='c'></div>")
+                let id = "问题名称<input type=text class=text id=title>";
+                tr.html(id);
+                $("#test").append(tr);
+
+                $(document).keydown(function (e) {
+                    if (e.key === "Enter") {
+                        let type = "<input hidden id=hidden"+i+" value=3>";
+                        let title = "<div class=div>";
+                        let title1 = i + "、问题名称<input type=text id=title"+i+" value=" + $(".text").val() + ">";
+                        let title2 = "</div>";
+
+                        $(".c").replaceWith(title + type + title1 + title2);
+                    }
+                });
+            })
+
+            //添加文本框
+            $("#addTextarea").click(function () {
+                i++;
+                let tr = $("<div class='d'></div>")
+                let id = "问题名称<input type=text class=text id=title>";
+                tr.html(id);
+                $("#test").append(tr);
+
+                $(document).keydown(function (e) {
+                    if (e.key === "Enter") {
+                        let type = "<input hidden id=hidden"+i+" value=4>";
+                        let title = "<div class=div>";
+                        let title1 = i + "、问题名称<input type=text id=title"+i+" value=" + $(".text").val() + ">";
+                        let title2 = "</div>";
+
+                        $(".d").replaceWith(title + type + title1 + title2);
+                    }
+                });
+            })
+        });
+    </script>
+
+    <script>
+        function getQuestionnaire(){
+            let boQuestionnaire = {};
+            boQuestionnaire.creatorId = $("#id").text();
+            boQuestionnaire.name = $("#name").val();
+
+            let boQuestionItemList = [];
+            let boQuestionItem = {};
+            let num = $(".div");
+            for(let i = 1;i < num.length + 1;i++){
+                boQuestionItem[i].title = $("#title"+i).val();
+                boQuestionItem[i].questionType = $("#hidden"+i).val();
+
+                let boQuestionItemContentList = [];
+                let boQuestionItemContent = {};
+                let n = $("."+i);
+                for(let j = 0;j < n.length;j++){
+                    boQuestionItemContent[j] = {"content": n.eq(j).val()}
+                    boQuestionItemContentList.push(boQuestionItemContent[j]);
+                }
+                boQuestionItemList.push(boQuestionItem[i]);
+            }
+
+            $.ajax({
+                url: "/api/questionnaire/create",
+                type: "put",
+                data: JSON.stringify(boQuestionnaire),
+                contentType: "application/json;charset=utf-8",
+                success: function (data) {
+                    window.location.href="/questionnaire/join?questionnaireId="+data.id;
+                },
+                error: function () {
+                    alert("error")
+                }
+            })
+        }
+    </script>
+</head>
+
+<body>
+<div class="row text-center" id="header">
+    <h1>创建问卷</h1>
+</div>
+
+<div id="container">
+    <div class="row">
+
+        <div class="col-2">
+            <div id="menu">
+                <div class="list-group">
+                    <b>添加问题类型</b>
+                    <button class="btn btn-outline-success form-control" type="button" id="addRadio">增加单选题</button>
+                    <button class="btn btn-outline-success form-control" type="button" id="addCheckboxes">增加多选题
+                    </button>
+                    <button class="btn btn-outline-success form-control" type="button" id="addText">增加简答题</button>
+                    <button class="btn btn-outline-success form-control" type="button" id="addTextarea">增加文本框
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-10">
+            <div id="content">
+
+                <div hidden>
+                    <p id="id" th:text="${user.id}"></p>
+                </div>
+                <div>
+                    <label class="form-label">问卷名称</label>
+                    <input type="text" id="name" class="form-control">
+                </div>
+                <div id="test">
+
+                </div>
+
+                <button onclick="getQuestionnaire()" class="btn btn-success">确定</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
-@Table(name = "questionnaire_item_content")
+@Table(name = "question_item_content")
 @DynamicUpdate
 public class QuestionItemContent {
     @Id

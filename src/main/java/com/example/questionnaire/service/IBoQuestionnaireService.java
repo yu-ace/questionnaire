@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface IBoQuestionnaireService {
-    BoQuestionnaire createBoQuestionnaire(BoQuestionnaire boQuestionnaire) throws Exception;
+    BoQuestionnaire createBoQuestionnaire(BoQuestionnaire boQuestionnaire);
     List<BoQuestionnaire> getBoQuestionnaireListByCreatorId(Integer creatorId, Pageable pageable);
     BoQuestionnaire getBoQuestionnaire(Integer id);
 

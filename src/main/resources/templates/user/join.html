@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>join</title>
+  <link href="/css/bootstrap.css" rel="stylesheet">
+  <script src="/jquery-3.6.1.min(1).js"></script>
+  <script>
+    function joinBoVoting() {
+      let boVotingSlip = {};
+      boVotingSlip.userId = $("#userId").text();
+      boVotingSlip.votingId = $("#boVotingId").text();
+
+      let boVotingItemList = [];
+      let a = $(".boVotingContentId");
+      let b = "";
+      a.each(function () {
+        if ($(this).prop("checked")) {
+          b = {"votingContentId": $(this).val()};
+          boVotingItemList.push(b);
+        }
+      })
+
+      boVotingSlip.boVotingItemList = boVotingItemList;
+      $.ajax({
+        url: "/createVotingSlip",
+        type: "post",
+        data: JSON.stringify(boVotingSlip),
+        contentType: "application/json;charset=utf-8",
+        success: function (data) {
+          if(data.code==0){
+            window.location.href="/result?boVotingId=" + data.data.votingId;
+          }else{
+            alert(data["message"]);
+          }
+        }
+      })
+    }
+  </script>
+
+</head>
+<body>
+<div class="row text-center" id="header">
+  <h1>欢迎参加该问卷调查</h1>
+</div>
+
+<div id="container">
+  <div class="row">
+    <div class="col-12">
+      <div id="content">
+        <p th:text="${tip}"></p>
+
+        <div>
+          <p id="userId" hidden th:text="${user.id}"></p>
+        </div>
+        <div>
+          <p id="boQuestionnaireId" hidden th:text="${boQuestionnaire.id}"></p>
+        </div>
+
+        <div>
+          问卷名称<span th:text="${boQuestionnaire.name}"></span>
+        </div>
+
+        <div th:each="m:${boQuestionnaire.getBoQuestionItemList()}">
+          <div>
+            <input class="boVotingContentId" type="checkbox" th:value="${m}"><span
+                  th:text="${m.content}"></span>
+          </div>
+        </div>
+        <button onclick="joinBoVoting()" class="btn btn-success">确定</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

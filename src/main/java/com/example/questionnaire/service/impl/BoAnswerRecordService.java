@@ -46,43 +46,43 @@ public class BoAnswerRecordService implements IBoAnswerRecordService {
      * }
      */
 
+
+
     @Override
-    public BoAnswerRecord createBoAnswerRecord(BoAnswerRecord boAnswerRecord) throws Exception{
+    public BoAnswerRecord createBoAnswerRecord(BoAnswerRecord boAnswerRecord){
         AnswerRecord answerRecord = BeanUtil.copyProperties(boAnswerRecord, AnswerRecord.class);
 
         AnswerRecord answerRecord1 = new AnswerRecord();
         answerRecord1.setRespondentId(answerRecord.getRespondentId());
         answerRecord1.setQuestionnaireId(answerRecord.getQuestionnaireId());
         answerRecord1.setAnswerTime(new Date());
-        AnswerRecord answerRecord2 = answerRecordDao.save(answerRecord1);
+        answerRecordDao.save(answerRecord1);
 
         List<BoAnswerItem> boAnswerItemList = boAnswerRecord.getBoAnswerItemList();
-        List<AnswerItemContent> answerItemContentList = null;
+        List<List<AnswerItemContent>> answerItemContentList = new ArrayList<>();
         for(BoAnswerItem boAnswerItem:boAnswerItemList){
             List<BoAnswerItemContent> boAnswerItemContentList = boAnswerItem.getBoAnswerItemContentList();
-            answerItemContentList = BeanUtil.copyToList(boAnswerItemContentList, AnswerItemContent.class);
+            List<AnswerItemContent> answerItemContentList1 = BeanUtil.copyToList(boAnswerItemContentList,
+                    AnswerItemContent.class);
+            answerItemContentList.add(answerItemContentList1);
         }
 
         List<AnswerItem> answerItemList = BeanUtil.copyToList(boAnswerItemList, AnswerItem.class);
-        for(AnswerItem answerItem:answerItemList){
+        for(int i = 0;i < answerItemList.size();i++){
             AnswerItem answerItem1 = new AnswerItem();
-            answerItem1.setAnswerRecordId(answerRecord2.getId());
-            answerItem1.setQuestionItemId(answerItem.getQuestionItemId());
-            AnswerItem answerItem2 = answerItemDao.save(answerItem1);
+            answerItem1.setAnswerRecordId(answerRecord1.getId());
+            answerItem1.setQuestionItemId(answerItemList.get(i).getQuestionItemId());
+            answerItemDao.save(answerItem1);
 
-            if(answerItemContentList != null){
-                for(AnswerItemContent answerItemContent:answerItemContentList){
-                    AnswerItemContent answerItemContent1 = new AnswerItemContent();
-                    answerItemContent1.setAnswerItemId(answerItem2.getId());
-                    answerItemContent1.setQuestionItemContentId(answerItemContent.getQuestionItemContentId());
-                    answerItemContentDao.save(answerItemContent1);
-                }
-            }else {
-                throw new Exception("选项不存在");
+            for(AnswerItemContent answerItemContent:answerItemContentList.get(i)){
+                answerItemContent.setAnswerItemId(answerItem1.getId());
+                answerItemContent.setQuestionItemContentId(answerItemContent.getQuestionItemContentId());
+                answerItemContentDao.save(answerItemContent);
             }
+
         }
 
-        BoAnswerRecord boAnswerRecord1 = BeanUtil.copyProperties(answerRecord2, BoAnswerRecord.class);
+        BoAnswerRecord boAnswerRecord1 = BeanUtil.copyProperties(answerRecord1, BoAnswerRecord.class);
         return boAnswerRecord1;
     }
 

@@ -33,60 +33,84 @@ public class BoQuestionnaireService implements IBoQuestionnaireService {
     /**
      * {
      * 	"name": "这个",
-     * 	"creatorId": 3,
-     * 	"questionItem": [{
-     * 		"titel": "性别",
-     * 		"questionnairId": 1,
+     * 	"creatorId": 4,
+     * 	"boQuestionItemList": [{
+     * 		"title": "性别",
      * 		"questionType": 1,
-     * 		"questionItemContent": [{
-     * 			"questionItemId": 1,
-     * 			"content": "男"
-     *                }, {
-     * 			"questionItemId": 1,
-     * 			"content": "女"
-     *        }]* 	}]
+     * 		"boQuestionItemContentList": [{
+     * 				"content": "男"
+     *                        },
+     *            {
+     * 				"content": "女"
+     *            }
+     * 		]
+     * 	},{
+     * 		"title": "喜欢吗",
+     * 		"questionType": 3,
+     * 		"boQuestionItemContentList": [{
+     * 				"content": ""
+     *            }
+     * 		]
+     * 	},{
+     * 		"title": "多选",
+     * 		"questionType": 2,
+     * 		"boQuestionItemContentList": [{
+     * 				"content": "q"
+     *            },
+     *            {
+     * 				"content": "w"
+     *            },
+     *            {
+     * 				"content": "e"
+     *            },
+     *            {
+     * 				"content": "r"
+     *            },
+     *            {
+     * 				"content": "t"
+     *            }
+     * 		]
+     * 	}]
      * }
      */
 
     @Override
-    public BoQuestionnaire createBoQuestionnaire(BoQuestionnaire boQuestionnaire) throws Exception{
+    public BoQuestionnaire createBoQuestionnaire(BoQuestionnaire boQuestionnaire){
         Questionnaire questionnaire = BeanUtil.copyProperties(boQuestionnaire, Questionnaire.class);
         //创建问卷
         Questionnaire questionnaire1 = new Questionnaire();
         questionnaire1.setName(questionnaire.getName());
         questionnaire1.setCreatorId(questionnaire.getCreatorId());
         questionnaire1.setCreateTime(new Date());
-        Questionnaire questionnaire2 = questionnaireDao.save(questionnaire1);
+        questionnaireDao.save(questionnaire1);
         //创建问卷题目列表
         List<BoQuestionItem> boQuestionItemList = boQuestionnaire.getBoQuestionItemList();
-        List<QuestionItemContent> questionItemContentList = null;
+        //创建对应的选项
+        List<List<QuestionItemContent>> questionItemContentList = new ArrayList<>();
         for(BoQuestionItem boQuestionItem:boQuestionItemList){
             List<BoQuestionItemContent> boQuestionItemContentList = boQuestionItem.getBoQuestionItemContentList();
-            questionItemContentList =  BeanUtil.copyToList(boQuestionItemContentList, QuestionItemContent.class);
+            List<QuestionItemContent> questionItemContentList1 =  BeanUtil.copyToList(boQuestionItemContentList,
+                    QuestionItemContent.class);
+            questionItemContentList.add(questionItemContentList1);
         }
 
         List<QuestionItem> questionItemList = BeanUtil.copyToList(boQuestionItemList, QuestionItem.class);
-        for(QuestionItem questionItem:questionItemList){
+        //每一个题目对应一个选项数组
+        for(int i = 0;i < questionItemList.size();i++){
             QuestionItem questionItem1 = new QuestionItem();
-            questionItem1.setTitle(questionItem.getTitle());
-            questionItem1.setQuestionType(questionItem.getQuestionType());
-            questionItem1.setQuestionnaireId(questionnaire2.getId());
-            QuestionItem questionItem2 = questionItemDao.save(questionItem1);
+            questionItem1.setTitle(questionItemList.get(i).getTitle());
+            questionItem1.setQuestionType(questionItemList.get(i).getQuestionType());
+            questionItem1.setQuestionnaireId(questionnaire1.getId());
+            questionItemDao.save(questionItem1);
 
-            //创建选项
-            if(questionItemContentList != null){
-                for(QuestionItemContent questionItemContent:questionItemContentList){
-                    QuestionItemContent questionItemContent1 = new QuestionItemContent();
-                    questionItemContent1.setContent(questionItemContent.getContent());
-                    questionItemContent1.setQuestionItemId(questionItem2.getId());
-                    questionItemContentDao.save(questionItemContent1);
-                }
-            }else {
-                throw new Exception("选项不存在");
+            for(QuestionItemContent questionItemContent:questionItemContentList.get(i)){
+                questionItemContent.setQuestionItemId(questionItem1.getId());
+                questionItemContentDao.save(questionItemContent);
             }
+
         }
 
-        BoQuestionnaire boQuestionnaire1 = BeanUtil.copyProperties(questionnaire2, BoQuestionnaire.class);
+        BoQuestionnaire boQuestionnaire1 = BeanUtil.copyProperties(questionnaire1, BoQuestionnaire.class);
         return boQuestionnaire1;
     }
 
