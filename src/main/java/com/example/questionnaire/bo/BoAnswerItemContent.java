@@ -3,7 +3,7 @@ package com.example.questionnaire.bo;
 public class BoAnswerItemContent {
     Integer id;
     Integer answerItemId;
-    Integer questionItemContentId;
+    String answerItemContent;
 
     public Integer getId() {
         return id;
@@ -21,11 +21,11 @@ public class BoAnswerItemContent {
         this.answerItemId = answerItemId;
     }
 
-    public Integer getQuestionItemContentId() {
-        return questionItemContentId;
+    public String getAnswerItemContent() {
+        return answerItemContent;
     }
 
-    public void setQuestionItemContentId(Integer questionItemContentId) {
-        this.questionItemContentId = questionItemContentId;
+    public void setAnswerItemContent(String answerItemContent) {
+        this.answerItemContent = answerItemContent;
     }
 }

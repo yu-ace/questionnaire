@@ -123,21 +123,23 @@
             boQuestionnaire.name = $("#name").val();
 
             let boQuestionItemList = [];
-            let boQuestionItem = {};
             let num = $(".div");
             for(let i = 1;i < num.length + 1;i++){
-                boQuestionItem[i].title = $("#title"+i).val();
-                boQuestionItem[i].questionType = $("#hidden"+i).val();
+                let a = "title" + i;
+                let b = "hidden" + i;
+                let c = $("#" + a).val();
+                boQuestionItemList[i - 1] = {};
+                boQuestionItemList[i - 1].title = c ;
+                boQuestionItemList[i - 1].questionType= $("#" + b).val();
 
                 let boQuestionItemContentList = [];
-                let boQuestionItemContent = {};
                 let n = $("."+i);
                 for(let j = 0;j < n.length;j++){
-                    boQuestionItemContent[j] = {"content": n.eq(j).val()}
-                    boQuestionItemContentList.push(boQuestionItemContent[j]);
+                    boQuestionItemContentList[j] = {"content": n.eq(j).val()};
                 }
-                boQuestionItemList.push(boQuestionItem[i]);
+                boQuestionItemList[i - 1].boQuestionItemContentList =boQuestionItemContentList;
             }
+            boQuestionnaire.boQuestionItemList=boQuestionItemList;
 
             $.ajax({
                 url: "/api/questionnaire/create",

@@ -34,15 +34,30 @@ public class BoAnswerRecordService implements IBoAnswerRecordService {
 
     /**
      * {
-     * 	"respondentId": 1,
-     * 	"questionnaireId": 3,
-     * 	"answerItem": [{
-     * 		"questionItemId": 2,
-     * 		"answerRecordId": 1,
-     * 		"answerItemContent": [{
-     * 			"answerItemId": 1,
-     * 			"questionItemContentId": 2
-     *                }]* 	}]
+     * 	"respondentId": 5,
+     * 	"questionnaireId": 1,
+     * 	"boAnswerItemList": [{
+     * 		"questionItemId": "1",
+     * 		"boAnswerItemContentList": [{
+     * 				"answerItemContent": "男"
+     *                        }
+     * 		]
+     * 	},{
+     * 		"questionItemId": "2",
+     * 		"boAnswerItemContentList": [{
+     * 				"answerItemContent": "喜欢"
+     *            }
+     * 		]
+     * 	},{
+     * 		"questionItemId": "3",
+     * 		"boAnswerItemContentList": [{
+     * 				"answerItemContent": "q"
+     *            },
+     *            {
+     * 				"answerItemContent": "r"
+     *            }
+     * 		]
+     * 	}]
      * }
      */
 
@@ -76,7 +91,7 @@ public class BoAnswerRecordService implements IBoAnswerRecordService {
 
             for(AnswerItemContent answerItemContent:answerItemContentList.get(i)){
                 answerItemContent.setAnswerItemId(answerItem1.getId());
-                answerItemContent.setQuestionItemContentId(answerItemContent.getQuestionItemContentId());
+                answerItemContent.setAnswerItemContent(answerItemContent.getAnswerItemContent());
                 answerItemContentDao.save(answerItemContent);
             }
 
@@ -84,6 +99,25 @@ public class BoAnswerRecordService implements IBoAnswerRecordService {
 
         BoAnswerRecord boAnswerRecord1 = BeanUtil.copyProperties(answerRecord1, BoAnswerRecord.class);
         return boAnswerRecord1;
+    }
+
+    @Override
+    public BoAnswerRecord getBoAnswerRecord(Integer id) {
+        AnswerRecord answerRecord = answerRecordDao.getReferenceById(id);
+        BoAnswerRecord boAnswerRecord = BeanUtil.copyProperties(answerRecord, BoAnswerRecord.class);
+
+        List<AnswerItem> answerItemList = answerItemDao.findByAnswerRecordId(boAnswerRecord.getId());
+        List<BoAnswerItem> boAnswerItemList = BeanUtil.copyToList(answerItemList, BoAnswerItem.class);
+
+        for(int i = 0;i < boAnswerItemList.size();i++){
+            List<AnswerItemContent> answerItemContentList = answerItemContentDao.
+                    findByAnswerItemId(boAnswerItemList.get(i).getId());
+            List<BoAnswerItemContent> boAnswerItemContentList = BeanUtil.
+                    copyToList(answerItemContentList, BoAnswerItemContent.class);
+            boAnswerItemList.get(i).setBoAnswerItemContentList(boAnswerItemContentList);
+        }
+        boAnswerRecord.setBoAnswerItemList(boAnswerItemList);
+        return boAnswerRecord;
     }
 
     @Override
@@ -110,18 +144,4 @@ public class BoAnswerRecordService implements IBoAnswerRecordService {
         return boAnswerRecordList;
     }
 
-    @Override
-    public List<BoAnswerItem> getBoAnswerItemByAnswerRecordId(Integer boAnswerRecordId) {
-        List<AnswerItem> answerItemList = answerItemDao.findByAnswerRecordId(boAnswerRecordId);
-        List<BoAnswerItem> boAnswerItemList = BeanUtil.copyToList(answerItemList, BoAnswerItem.class);
-        return boAnswerItemList;
-    }
-
-    @Override
-    public List<BoAnswerItemContent> getBoAnswerItemContentByBoAnswerItemId(Integer boAnswerItemId) {
-        List<AnswerItemContent> answerItemContentList = answerItemContentDao.findByAnswerItemId(boAnswerItemId);
-        List<BoAnswerItemContent> boAnswerItemContentList = BeanUtil.copyToList(answerItemContentList,
-                BoAnswerItemContent.class);
-        return boAnswerItemContentList;
-    }
 }

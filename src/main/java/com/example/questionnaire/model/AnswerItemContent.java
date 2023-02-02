@@ -13,8 +13,8 @@ public class AnswerItemContent {
     Integer id;
     @Column(name = "answer_item_id")
     Integer answerItemId;
-    @Column(name = "question_item_content_id")
-    Integer questionItemContentId;
+    @Column(name = "answer_item_content")
+    String answerItemContent;
 
     public Integer getId() {
         return id;
@@ -32,11 +32,11 @@ public class AnswerItemContent {
         this.answerItemId = answerItemId;
     }
 
-    public Integer getQuestionItemContentId() {
-        return questionItemContentId;
+    public String getAnswerItemContent() {
+        return answerItemContent;
     }
 
-    public void setQuestionItemContentId(Integer questionItemContentId) {
-        this.questionItemContentId = questionItemContentId;
+    public void setAnswerItemContent(String answerItemContent) {
+        this.answerItemContent = answerItemContent;
     }
 }

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>result</title>
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <script src="/jquery-3.6.1.min(1).js"></script>
+    <script>
+        function getQuestionItemTitle(){
+            let a = $(".questionItemId");
+            for(let i = 0;i < a.length;i++){
+                let aa = a[i];
+                let url = "/api/questionItem?questionItemId="+ aa.textContent;
+                $.get(url,function (data,status){
+                    if(status == "success"){
+                        aa.textContent = data.title;
+                    }else{
+                        console.log("error")
+                    }
+                })
+                console.log(aa.textContent);
+            }
+        }
+    </script>
+</head>
+<body onload="getQuestionItemTitle()">
+<div class="row text-center" id="header">
+    <h1>欢迎查看问卷调查系统</h1>
+</div>
+
+<div id="container">
+    <div class="row">
+        <div class="col-12">
+            <div id="content">
+
+            <div th:each="m:${boAnswerRecord.getBoAnswerItemList()}">
+            <div><span th:text="${m.id}"></span>
+                <span class="questionItemId" th:text="${m.questionItemId}"></span>
+              <span th:each="n:${m.boAnswerItemContentList}"
+                    th:text="${n.answerItemContent}"></span>
+            </div>
+            </div>
+        </div>
+        <a class="list-group-item list-group-item-action list-group-item-info" href="/questionnaire/dashBoard">返回首页</a>
+    </div>
+</div>
+</div>
+</body>
+</html>

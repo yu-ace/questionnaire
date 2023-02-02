@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>join</title>
+  <link href="/css/bootstrap.css" rel="stylesheet">
+  <script src="/jquery-3.6.1.min(1).js"></script>
+  <script>
+    function createAnswerRecord(){
+      let boAnswerRecord = {};
+      boAnswerRecord.respondentId = $("#userId").text();
+      boAnswerRecord.questionnaireId = $("#boQuestionnaireId").text();
+
+      let boAnswerItemList = [];
+      let num = $(".id");
+      for(let i = 0;i < num.length;i++){
+        boAnswerItemList[i] = {};
+        boAnswerItemList[i].questionItemId = num.eq(i).text();
+
+        let boAnswerItemContentList = [];
+        let n = $("."+num.eq(i).text());
+        let j = -1;
+          n.each(function () {
+            if ($(this).prop("checked")) {
+              j++;
+              boAnswerItemContentList[j] = {"answerItemContent": $(this).val()};
+            }
+          })
+          if(boAnswerItemContentList.length === 0){
+            let a = {"answerItemContent": n.val()};
+            boAnswerItemContentList[0] = a;
+          }
+        boAnswerItemList[i].boAnswerItemContentList =boAnswerItemContentList;
+      }
+      boAnswerRecord.boAnswerItemList=boAnswerItemList;
+
+      $.ajax({
+        url: "/api/answerRecord/create",
+        type: "put",
+        data: JSON.stringify(boAnswerRecord),
+        contentType: "application/json;charset=utf-8",
+        success: function (data) {
+          window.location.href="/answerRecord/lookFor?answerRecordId="+data.id;
+        },
+        error: function () {
+          alert("error")
+        }
+      })
+    }
+  </script>
+
+</head>
+<body>
+<div class="row text-center" id="header">
+  <h1>欢迎参加该问卷调查</h1>
+</div>
+
+<div id="container">
+  <div class="row">
+    <div class="col-12">
+      <div id="content">
+        <p th:text="${tip}"></p>
+
+        <div>
+          <p id="userId" hidden th:text="${user.id}"></p>
+        </div>
+        <div>
+          <p id="boQuestionnaireId" hidden th:text="${boQuestionnaire.id}"></p>
+        </div>
+
+        <div>
+          问卷名称<span th:text="${boQuestionnaire.name}"></span>
+        </div>
+
+        <div th:each="m:${boQuestionnaire.getBoQuestionItemList()}">
+          <div th:switch="${m.questionType}">
+            <span th:case="1">
+              <div><span class="id" th:text="${m.id}"></span><span th:text="${m.title}"></span>
+              <input type="radio" th:name="${m.id}" th:class="${m.id}"
+                     th:each="n:${m.boQuestionItemContentList}"
+                     th:value="${n.content}" th:text="${n.content}">
+            </div>
+            </span>
+            <span th:case="2">
+            <div><span class="id" th:text="${m.id}"></span><span th:text="${m.title}"></span>
+              <input type="checkbox" th:name="${m.id}" th:class="${m.id}"
+                     th:each="n:${m.boQuestionItemContentList}"
+                     th:value="${n.content}" th:text="${n.content}">
+            </div>
+            </span>
+            <span th:case="3">
+            <div><span class="id" th:text="${m.id}"></span><span th:text="${m.title}"></span>
+              <input type="text" th:name="${m.id}" th:class="${m.id}"
+                     th:each="n:${m.boQuestionItemContentList}">
+            </div>
+            </span>
+            <span th:case="4">
+            <div><span class="id" th:text="${m.id}"></span><span th:text="${m.title}"></span>
+              <textarea rows="10" cols="30" th:name="${m.id}" th:class="${m.id}"
+                        th:each="n:${m.boQuestionItemContentList}"></textarea>
+            </div>
+            </span>
+        </div>
+        </div>
+        <button onclick="createAnswerRecord()" class="btn btn-success">确定</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

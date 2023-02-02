@@ -10,10 +10,8 @@ import java.util.List;
 
 public interface IBoAnswerRecordService {
     BoAnswerRecord createBoAnswerRecord(BoAnswerRecord boAnswerRecord);
+    BoAnswerRecord getBoAnswerRecord(Integer id);
     List<BoAnswerRecord> getBoAnswerRecordByRespondentId(Integer respondentId, Pageable pageable);
     List<BoAnswerRecord> getBoAnswerRecordByQuestionnaireId(Integer questionnaireId,Pageable pageable);
 
-    List<BoAnswerItem> getBoAnswerItemByAnswerRecordId(Integer boAnswerRecordId);
-
-    List<BoAnswerItemContent> getBoAnswerItemContentByBoAnswerItemId(Integer boAnswerItemId);
 }
