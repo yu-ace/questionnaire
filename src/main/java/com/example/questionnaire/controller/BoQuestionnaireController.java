@@ -18,8 +18,14 @@ public class BoQuestionnaireController {
     @ResponseBody
     @RequestMapping(path="/api/questionnaire/create",method = RequestMethod.PUT)
     public BoQuestionnaire creat(@RequestBody BoQuestionnaire boQuestionnaire){
-        BoQuestionnaire boQuestionnaire1;
-        boQuestionnaire1 = boQuestionnaireService.createBoQuestionnaire(boQuestionnaire);
+        BoQuestionnaire boQuestionnaire1= boQuestionnaireService.createBoQuestionnaire(boQuestionnaire);
+        return boQuestionnaire1;
+    }
+
+    @ResponseBody
+    @RequestMapping(path="/api/questionnaire",method = RequestMethod.GET)
+    public BoQuestionnaire creat(Integer questionnaireId){
+        BoQuestionnaire boQuestionnaire1= boQuestionnaireService.getBoQuestionnaire(questionnaireId);
         return boQuestionnaire1;
     }
 }

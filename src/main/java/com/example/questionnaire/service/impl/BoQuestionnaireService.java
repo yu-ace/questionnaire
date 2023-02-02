@@ -129,35 +129,18 @@ public class BoQuestionnaireService implements IBoQuestionnaireService {
     public BoQuestionnaire getBoQuestionnaire(Integer id) {
         Questionnaire questionnaire = questionnaireDao.getReferenceById(id);
         BoQuestionnaire boQuestionnaire = BeanUtil.copyProperties(questionnaire, BoQuestionnaire.class);
+
+        List<QuestionItem> questionItemList = questionItemDao.findByQuestionnaireId(boQuestionnaire.getId());
+        List<BoQuestionItem> boQuestionItemList = BeanUtil.copyToList(questionItemList, BoQuestionItem.class);
+
+        for(int i = 0;i < boQuestionItemList.size();i++){
+            List<QuestionItemContent> questionItemContentList = questionItemContentDao.
+                    findByQuestionItemId(questionItemList.get(i).getId());
+            List<BoQuestionItemContent> boQuestionItemContentList = BeanUtil.copyToList(questionItemContentList,
+                    BoQuestionItemContent.class);
+            boQuestionItemList.get(i).setBoQuestionItemContentList(boQuestionItemContentList);
+        }
+        boQuestionnaire.setBoQuestionItemList(boQuestionItemList);
         return boQuestionnaire;
-    }
-
-
-    @Override
-    public List<BoQuestionItem> getBoQuestionItemListByBoQuestionnaireId(Integer boQuestionnaireId) {
-        List<QuestionItem> questionItemList = questionItemDao.findByQuestionnaireId(boQuestionnaireId);
-        List<BoQuestionItem> boQuestionItemList = BeanUtil.copyToList(questionItemList, BoQuestionItem.class);
-        return boQuestionItemList;
-    }
-
-    @Override
-    public List<BoQuestionItem> getBoQuestionItemListByBoQuestionnaireIdAndBoQuestionnaireType
-            (Integer boQuestionnaireId, Integer boQuestionType) {
-        List<QuestionItem> questionItemList = questionItemDao
-                .findByQuestionnaireIdAndQuestionType(boQuestionnaireId,boQuestionType);
-        List<BoQuestionItem> boQuestionItemList = BeanUtil.copyToList(questionItemList, BoQuestionItem.class);
-        return boQuestionItemList;
-    }
-
-
-
-
-    @Override
-    public List<BoQuestionItemContent> getBoQuestionItemContentListByBoQuestionItemId(Integer boQuestionItemId) {
-        List<QuestionItemContent> questionItemContentList = questionItemContentDao
-                .findByQuestionItemId(boQuestionItemId);
-        List<BoQuestionItemContent> boQuestionItemContentList = BeanUtil.copyToList
-                (questionItemContentList, BoQuestionItemContent.class);
-        return boQuestionItemContentList;
     }
 }

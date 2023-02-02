@@ -18,13 +18,13 @@ public class VerificationCodeController {
     IVerificationCodeService verificationCodeService;
 
     @ResponseBody
-    @RequestMapping(path = "/api/VerificationCode/send",method = RequestMethod.GET)
+    @RequestMapping(path = "/api/verificationCode/send",method = RequestMethod.GET)
     public void send(String cellphone){
         verificationCodeService.sendVerificationCode(cellphone);
     }
 
     @RequestMapping(path = "/verificationCode/check",method = RequestMethod.POST)
-    public String check(
+    public String checkVerificationCode(
             @RequestParam(name = "cellphone")
             String cellphone,
             @RequestParam(name = "code")

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>created</title>
+  <link href="/css/bootstrap.css" rel="stylesheet">
+  <script src="/jquery-3.6.1.min(1).js"></script>
+  <script>
+    function changePage() {
+      $("form").submit();
+    }
+  </script>
+</head>
+<body>
+<div class="row text-center" id="header">
+  <h1>欢迎登录问卷调查系统</h1>
+</div>
+
+<div id="container">
+  <div class="row">
+    <div class="col-12">
+      <div id="content">
+
+        <h2>创建的问卷列表</h2>
+
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col">问卷编号</th>
+            <th scope="col">问卷名称</th>
+            <th scope="col">查看回答详情</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="m:${boQuestionnaireList}">
+            <td th:text="${m.id}"></td>
+            <td th:text="${m.name}"></td>
+            <td> <a th:href="@{'/answerRecord/get?questionnaireId='+${m.id}}">查看</a></td>
+          </tr>
+        </table>
+
+        <form action="/questionnaire/page" method="get">
+          <label>
+            请输入页数
+            <select onchange="changePage()" class="form-select" name="pageNumber"
+                    aria-label="Default select example">
+              <option value="0">1</option>
+              <option value="1">2</option>
+            </select>
+          </label>
+        </form>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

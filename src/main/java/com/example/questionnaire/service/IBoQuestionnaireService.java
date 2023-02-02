@@ -15,11 +15,5 @@ public interface IBoQuestionnaireService {
     BoQuestionnaire getBoQuestionnaire(Integer id);
 
 
-    List<BoQuestionItem> getBoQuestionItemListByBoQuestionnaireId(Integer boQuestionnaireId);
-    List<BoQuestionItem> getBoQuestionItemListByBoQuestionnaireIdAndBoQuestionnaireType(Integer boQuestionnaireId,
-                                                                                    Integer boQuestionType);
-
-
-    List<BoQuestionItemContent> getBoQuestionItemContentListByBoQuestionItemId(Integer boQuestionItemId);
 
 }

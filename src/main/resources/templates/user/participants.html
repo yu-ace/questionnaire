@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>participants</title>
+  <link href="/css/bootstrap.css" rel="stylesheet">
+  <script src="/jquery-3.6.1.min(1).js"></script>
+  <script>
+    function changePage() {
+      $("form").submit();
+    }
+  </script>
+  <script>
+    function getQuestionnaireName() {
+      let a = $("#questionnaireId");
+        let url = "/api/questionnaire?questionnaireId=" + a.textContent;
+        $.get(url, function (data, status) {
+          if (status == "success") {
+            a.textContent = data.name;
+          } else {
+            console.log("error");
+          }
+        })
+        console.log(a.textContent);
+    }
+  </script>
+  <script>
+    function getQuestionnaireId(){
+      let a = $("#questionnaireId").val();
+      $("#questionnaireId1").val(a);
+    }
+  </script>
+</head>
+<body onload="getQuestionnaireName()">
+<div class="row text-center" id="header">
+  <h1>欢迎使用问卷调查系统</h1>
+</div>
+
+<div id="container">
+  <div class="row">
+    <div class="col-12">
+      <div id="content">
+
+        <h2>创建的问卷列表</h2>
+
+        <div>
+          问卷名称<span id="questionnaireId" th:text="${questionnaireId}"></span>
+        </div>
+
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col">问卷编号</th>
+            <th scope="col">投票时间</th>
+            <th scope="col">查看投票内容</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="m:${boAnswerRecordList}">
+            <td th:text="${m.id}"></td>
+            <td th:text="${m.answerTime}"></td>
+            <td> <a th:href="@{'/answerItem/lookFor?answerRecordId='+${m.id}}">查看</a></td>
+          </tr>
+        </table>
+
+        <form action="/answerRecord/page" method="get">
+          <input id="questionnaireId1" type="hidden" name="questionnaireId">
+          <label>
+            请输入页数
+            <select onchange="getQuestionnaireId(),changePage()" class="form-select" name="pageNumber"
+                    aria-label="Default select example">
+              <option value="0">1</option>
+              <option value="1">2</option>
+            </select>
+          </label>
+        </form>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
