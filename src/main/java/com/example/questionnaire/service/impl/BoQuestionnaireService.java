@@ -15,12 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Service
+@Transactional
 public class BoQuestionnaireService implements IBoQuestionnaireService {
 
     @Autowired
@@ -102,17 +104,15 @@ public class BoQuestionnaireService implements IBoQuestionnaireService {
         List<QuestionItem> questionItemList = BeanUtil.copyToList(boQuestionItemList, QuestionItem.class);
         //每一个题目对应一个选项数组
         for(int i = 0;i < questionItemList.size();i++){
-            QuestionItem questionItem1 = new QuestionItem();
-            questionItem1.setTitle(questionItemList.get(i).getTitle());
-            questionItem1.setQuestionType(questionItemList.get(i).getQuestionType());
+            QuestionItem questionItem1 = questionItemList.get(i);
             questionItem1.setQuestionnaireId(questionnaire1.getId());
             questionItemDao.save(questionItem1);
 
-            for(QuestionItemContent questionItemContent:questionItemContentList.get(i)){
+            List<QuestionItemContent> questionItemContents = questionItemContentList.get(i);
+            for(QuestionItemContent questionItemContent: questionItemContents){
                 questionItemContent.setQuestionItemId(questionItem1.getId());
-                questionItemContentDao.save(questionItemContent);
             }
-
+            questionItemContentDao.saveAll(questionItemContents);
         }
 
         BoQuestionnaire boQuestionnaire1 = BeanUtil.copyProperties(questionnaire1, BoQuestionnaire.class);

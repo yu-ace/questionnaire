@@ -1,7 +1,5 @@
 package com.example.questionnaire.service;
 
-import com.example.questionnaire.bo.BoAnswerItem;
-import com.example.questionnaire.bo.BoAnswerItemContent;
 import com.example.questionnaire.bo.BoAnswerRecord;
 import org.springframework.data.domain.Pageable;
 

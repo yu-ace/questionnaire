@@ -31,18 +31,23 @@
 
 <div id="container">
     <div class="row">
-        <div class="col-12">
+        <div class="col-4">
+        </div>
+        <div class="col-4">
             <div id="content">
 
             <div th:each="m:${boAnswerRecord.getBoAnswerItemList()}">
             <div><span th:text="${m.id}"></span>
                 <span class="questionItemId" th:text="${m.questionItemId}"></span>
-              <span th:each="n:${m.boAnswerItemContentList}"
-                    th:text="${n.answerItemContent}"></span>
+              <tr th:each="n:${m.boAnswerItemContentList}">
+                  <td th:text="${n.answerItemContent}"></td>
+                    </tr>
             </div>
             </div>
+            <a class="list-group-item list-group-item-action list-group-item-info" href="/questionnaire/dashBoard">返回首页</a>
         </div>
-        <a class="list-group-item list-group-item-action list-group-item-info" href="/questionnaire/dashBoard">返回首页</a>
+            <div class="col-4">
+            </div>
     </div>
 </div>
 </div>
