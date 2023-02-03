@@ -109,4 +109,59 @@ public class PageController {
         model.addAttribute("boAnswerRecord",boAnswerRecord);
         return "questionnaire/result";
     }
+
+    @RequestMapping(path = "/questionnaire/created",method = RequestMethod.GET)
+    public String created(Model model,HttpServletRequest request){
+        User user = (User) request.getSession().getAttribute("user");
+        PageRequest of = PageRequest.of(0, 10);
+        List<BoQuestionnaire> boQuestionnaireList = boQuestionnaireService.
+                getBoQuestionnaireListByCreatorId(user.getId(), of);
+        model.addAttribute("boQuestionnaireList",boQuestionnaireList);
+        return "user/created";
+    }
+
+    @RequestMapping(path = "/questionnaire/page",method = RequestMethod.GET)
+    public String questionnaireByPage(
+            @RequestParam(name = "pageNumber")
+            Integer pageNumber,Model model,HttpServletRequest request){
+        User user = (User) request.getSession().getAttribute("user");
+        PageRequest of = PageRequest.of(pageNumber, 10);
+        List<BoQuestionnaire> boQuestionnaireList = boQuestionnaireService.
+                getBoQuestionnaireListByCreatorId(user.getId(), of);
+        model.addAttribute("boQuestionnaireList",boQuestionnaireList);
+        return "user/created";
+    }
+
+    @RequestMapping(path = "/answerRecord/get",method = RequestMethod.GET)
+    public String answerRecord(int questionnaireId,Model model){
+        PageRequest of = PageRequest.of(0, 10);
+        List<BoAnswerRecord> boAnswerRecordList = boAnswerRecordService.
+                getBoAnswerRecordByQuestionnaireId(questionnaireId, of);
+        model.addAttribute("questionnaireId",questionnaireId);
+        model.addAttribute("boAnswerRecordList",boAnswerRecordList);
+        return "user/participants";
+    }
+
+    @RequestMapping(path = "/answerRecord/page",method = RequestMethod.GET)
+    public String answerItemByPage(
+            @RequestParam(name = "pageNumber")
+            Integer pageNumber,
+            @RequestParam(name = "questionnaireId")
+            Integer questionnaireId,
+            Model model){
+        PageRequest of = PageRequest.of(pageNumber, 10);
+        List<BoAnswerRecord> boAnswerRecordList = boAnswerRecordService.
+                getBoAnswerRecordByQuestionnaireId(questionnaireId, of);
+        model.addAttribute("questionnaireId",questionnaireId);
+        model.addAttribute("boAnswerRecordList",boAnswerRecordList);
+        return "user/participants";
+    }
+
+
+    @RequestMapping(path = "/answerRecord/lookFor",method = RequestMethod.GET)
+    public String lookFor(Integer answerRecordId,Model model){
+        BoAnswerRecord boAnswerRecord = boAnswerRecordService.getBoAnswerRecord(answerRecordId);
+        model.addAttribute("boAnswerRecord",boAnswerRecord);
+        return "user/result";
+    }
 }
