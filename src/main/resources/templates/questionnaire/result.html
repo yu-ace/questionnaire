@@ -37,8 +37,9 @@
             <div th:each="m:${boAnswerRecord.getBoAnswerItemList()}">
             <div><span th:text="${m.id}"></span>
                 <span class="questionItemId" th:text="${m.questionItemId}"></span>
-              <span th:each="n:${m.boAnswerItemContentList}"
-                    th:text="${n.answerItemContent}"></span>
+              <tr th:each="n:${m.boAnswerItemContentList}">
+                  <td th:text="${n.answerItemContent}"></td>
+                    </tr>
             </div>
             </div>
         </div>
